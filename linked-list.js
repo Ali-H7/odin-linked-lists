@@ -9,11 +9,11 @@ class linkedList {
       this.head = newNode;
       return;
     } else {
-      let temp = this.head;
-      while (temp.nextNode != null) {
-        temp = temp.nextNode;
+      let currentNode = this.head;
+      while (currentNode.nextNode != null) {
+        currentNode = currentNode.nextNode;
       }
-      temp.nextNode = newNode;
+      currentNode.nextNode = newNode;
     }
   }
 
@@ -23,14 +23,48 @@ class linkedList {
     this.head = newNode;
   }
 
+  insertAt(value, index) {
+    const newNode = new node(value);
+    let currentNode = this.head;
+    let count = 1;
+    if (index == 0) {
+      newNode.nextNode = this.head;
+      this.head = newNode;
+      return;
+    }
+    while (count < index) {
+      count++;
+      currentNode = currentNode.nextNode;
+    }
+    newNode.nextNode = currentNode.nextNode;
+    currentNode.nextNode = newNode;
+  }
+
+  removeAt(index) {
+    let count = 1;
+    let currentNode = this.head;
+
+    if (index === 0) return (this.head = currentNode.nextNode);
+
+    while (count < index) {
+      count++;
+      currentNode = currentNode.nextNode;
+    }
+
+    if (currentNode === null) {
+      return console.log(`The value can't be removed it doesn't exist`);
+    }
+    currentNode.nextNode = currentNode.nextNode.nextNode;
+  }
+
   size() {
     let size = 1;
-    let temp = this.head;
+    let currentNode = this.head;
 
-    if (temp === null) return console.log("There's nothing on the list");
+    if (currentNode === null) return console.log("There's nothing on the list");
 
-    while (temp.nextNode != null) {
-      temp = temp.nextNode;
+    while (currentNode.nextNode != null) {
+      currentNode = currentNode.nextNode;
       size++;
     }
     console.log(`There are ${size} values on the list`);
@@ -43,13 +77,13 @@ class linkedList {
   }
 
   displayTail() {
-    let temp = this.head;
-    if (temp === null) return console.log("There's nothing on the list");
-    while (temp.nextNode.nextNode != null) {
-      temp = temp.nextNode;
+    let currentNode = this.head;
+    if (currentNode === null) return console.log("There's nothing on the list");
+    while (currentNode.nextNode.nextNode != null) {
+      currentNode = currentNode.nextNode;
     }
-    if (temp.nextNode.nextNode === null) {
-      const tail = temp.nextNode;
+    if (currentNode.nextNode.nextNode === null) {
+      const tail = currentNode.nextNode;
       console.log(tail.value);
     } else {
       console.log('Not Found');
@@ -57,70 +91,74 @@ class linkedList {
   }
 
   at(index) {
-    let size = 0;
-    let temp = this.head;
-    if (temp === null) return console.log("There's nothing on the list");
-    while (size < index) {
-      size++;
-      temp = temp.nextNode;
-    }
+    let count = 0;
+    let currentNode = this.head;
+    if (currentNode === null) return console.log("There's nothing on the list");
     try {
-      console.log(temp.value);
+      while (count < index) {
+        count++;
+        currentNode = currentNode.nextNode;
+      }
+      console.log(currentNode.value);
     } catch (error) {
-      console.log('Not Found');
+      console.log('The value was not found on the list');
       return;
     }
   }
 
   pop() {
-    let temp = this.head;
-    if (temp === null) return console.log('The list is already empty !');
-    while (temp.nextNode.nextNode != null) {
-      temp = temp.nextNode;
+    let currentNode = this.head;
+    if (currentNode === null) return console.log('The list is already empty !');
+    while (currentNode.nextNode.nextNode != null) {
+      currentNode = currentNode.nextNode;
     }
-    temp.nextNode = null;
+    currentNode.nextNode = null;
   }
+
   contains(value) {
-    let temp = this.head;
-    while (temp != null) {
-      if (temp.value === value) {
+    let currentNode = this.head;
+    while (currentNode != null) {
+      if (currentNode.value === value) {
         console.log(`The value ${value} was found on the list`);
         return true;
       }
-      temp = temp.nextNode;
+      currentNode = currentNode.nextNode;
     }
-    if (temp === null) {
+    if (currentNode === null) {
       console.log(`The value ${value} was not found on the list`);
       return false;
     }
   }
+
   find(value) {
-    let temp = this.head;
+    let currentNode = this.head;
     let index = 0;
-    while (temp != null) {
-      if (temp.value === value) {
+    while (currentNode != null) {
+      if (currentNode.value === value) {
         return console.log(index);
       }
       index++;
-      temp = temp.nextNode;
+      currentNode = currentNode.nextNode;
     }
-    if (temp === null) {
+    if (currentNode === null) {
       console.log('Index was not found');
     }
   }
 
   toString() {
-    let temp = this.head;
-    if (temp === null) return console.log("There's nothing on the list");
-    const string = createString(temp);
+    let currentNode = this.head;
+    if (currentNode === null) return console.log("There's nothing on the list");
+    const string = createString(currentNode);
     console.log(string);
     return string;
 
-    function createString(temp) {
-      if (temp.nextNode === null) {
-        return `( ${temp.value} ) -> ` + null;
+    function createString(currentNode) {
+      if (currentNode.nextNode === null) {
+        return `( ${currentNode.value} ) -> ` + null;
       } else {
-        return `( ${temp.value} ) -> ` + createString(temp.nextNode);
+        return (
+          `( ${currentNode.value} ) -> ` + createString(currentNode.nextNode)
+        );
       }
     }
   }
@@ -140,11 +178,16 @@ newList.prepend('parrot');
 newList.append('hamster');
 newList.prepend('snake');
 newList.append('turtle');
+newList.insertAt('bear', 0);
+newList.insertAt('pigeon', 2);
+newList.insertAt('bat', 1);
+newList.pop(1);
+newList.removeAt(3);
+newList.removeAt(1);
 newList.size();
 newList.displayHead();
 newList.displayTail();
-newList.pop(1);
 newList.at(3);
 newList.contains('dog');
-newList.find('snake');
+newList.find('cat');
 newList.toString();
